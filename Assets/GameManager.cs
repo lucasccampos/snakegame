@@ -38,14 +38,18 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!isGameOver)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
+            QuitGame();
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (isGameOver)
         {
-            StartGame();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                StartGame();
+            }
         }
     }
 
@@ -71,7 +75,14 @@ public class GameManager : MonoBehaviour
         RefreshText();
     }
 
-
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
 
     public void AddScore(int points)
     {
