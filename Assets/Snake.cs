@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class Snake : MonoBehaviour
 {
-    private Vector2 _direction = Vector2.right;
+    private Vector2 _direction;
+    private Vector2 _nextDirection;
     private List<Transform> _segments = new List<Transform>();
 
     public Transform segmentPrefab;
 
     public int initialSize = 2;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -20,21 +23,24 @@ public class Snake : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        float horizontal = Input.GetAxisRaw("Horizontal");
+
+        if (horizontal != 0)
         {
-            _direction = Vector2.up;
+            _nextDirection = new Vector2(horizontal, 0f);
         }
-        else if (Input.GetKeyDown(KeyCode.S))
+        else
         {
-            _direction = Vector2.down;
+            float vertical = Input.GetAxisRaw("Vertical");
+            if (vertical != 0)
+            {
+                _nextDirection = new Vector2(0f, vertical);
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.A))
+
+        if (_direction != _nextDirection && _nextDirection != (_direction * -1))
         {
-            _direction = Vector2.left;
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            _direction = Vector2.right;
+            _direction = _nextDirection;
         }
     }
 
@@ -62,6 +68,9 @@ public class Snake : MonoBehaviour
 
     void ResetState()
     {
+        _direction = Vector2.right;
+        _nextDirection = Vector2.right;
+
         for (int i = 1; i < _segments.Count; i++)
         {
             Destroy(_segments[i].gameObject);
@@ -91,7 +100,7 @@ public class Snake : MonoBehaviour
         {
             Grow();
         }
-        else if (other.CompareTag("Wall"))
+        else if (other.CompareTag("Obstacle"))
         {
             Debug.Log("Game Over");
         }
