@@ -13,7 +13,9 @@ public class Snake : MonoBehaviour
     [SerializeField] private int initialSize = 2;
 
     private float moveTimer;
-    [SerializeField] private float moveTimerMax = 0.1f;
+    [SerializeField] private float minMoveTimer = 0.05f;
+    [SerializeField] private float defaultMaxMoveTimer = 0.1f;
+    public float moveTimerMax = 0.1f;
 
     private GameManager _gameManager;
 
@@ -85,7 +87,7 @@ public class Snake : MonoBehaviour
         }
     }
 
-    private void Grow()
+    public void Grow()
     {
         Transform segment = Instantiate(this.segmentPrefab);
         segment.position = _segments[_segments.Count - 1].position;
@@ -93,8 +95,14 @@ public class Snake : MonoBehaviour
         _segments.Add(segment);
     }
 
+    public void SetSpeed(float newSpeed)
+    {
+        this.moveTimerMax = Mathf.Min(newSpeed, minMoveTimer);
+    }
+
     private void ResetState()
     {
+        this.moveTimerMax = defaultMaxMoveTimer;
         _direction = Vector2.right;
         _nextDirection = Vector2.right;
 
@@ -114,23 +122,38 @@ public class Snake : MonoBehaviour
         this.transform.position = Vector3.zero;
     }
 
-    private void Shrink()
+    public void Shrink()
     {
+        if(_segments.Count == 1){
+            _gameManager.EndGame();
+            return;
+        }
+
         Transform segment = _segments[_segments.Count - 1].transform;
         _segments.Remove(segment);
         Destroy(segment.gameObject);
     }
 
+    public void Reverse()
+    {
+        int segmentCount = _segments.Count;
+
+        print(segmentCount);
+        this.transform.position = _segments[segmentCount - 1].position + (Vector3)_direction;
+
+        _direction *= -1;
+        _segments.Reverse(1, segmentCount - 1);
+
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Food"))
-        {
-            Grow();
-            _gameManager.AddScore(1);
-        }
-        else if (other.CompareTag("Obstacle"))
+        if (other.CompareTag("Obstacle"))
         {
             _gameManager.EndGame();
+        }
+        else if (other.CompareTag("Item")){
+            other.GetComponent<Item>().ApplyEffect(this);
         }
     }
 }

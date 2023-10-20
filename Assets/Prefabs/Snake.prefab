@@ -172,3 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   segmentPrefab: {fileID: 2194852387761097546, guid: b6cfc4137def0f74c8bd3b5c29bbdb3d, type: 3}
+  initialSize: 2
+  minMoveTimer: 0.05
+  defaultMaxMoveTimer: 0.08
+  moveTimerMax: 0.1

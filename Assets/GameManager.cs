@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
     }
 
@@ -65,6 +66,7 @@ public class GameManager : MonoBehaviour
 
     public void EndGame()
     {
+        AudioManager.instance.PlaySfx("die");
         isGameOver = true;
         endGameText.gameObject.SetActive(true);
     }
