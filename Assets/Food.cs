@@ -10,7 +10,6 @@ public class Food : Item
 
     public override void ApplyEffect(Snake snake){
         snake.Grow();
-        GameManager.instance?.AddScore(1);
         this.itemUsedEvent?.Invoke(this.transform);
         base.ApplyEffect(snake);
     }

@@ -16,6 +16,7 @@ public abstract class Item : MonoBehaviour
     }
 
     public virtual void ApplyEffect(Snake snake){
+        GameManager.instance?.AddScore(1);
         AudioManager.instance.PlaySfx(pickSoundName);
         Destroy(Instantiate(particlePrefab, transform.position, Quaternion.identity), 5f);
 
